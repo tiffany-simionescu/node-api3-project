@@ -68,8 +68,15 @@ router.delete('/:id', validateUserId(), (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+router.put('/:id', validateUserId(), validateUser(), (req, res) => {
+  userDb.update(req.params.id, req.user)
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err =>{
+      console.error(err);
+      next(err);
+    })
 });
 
 module.exports = router;
