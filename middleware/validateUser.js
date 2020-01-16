@@ -8,3 +8,7 @@ function validateUser() {
     next();
   }
 }
+
+module.exports = {
+  validateUser
+}
