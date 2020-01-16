@@ -26,7 +26,13 @@ router.get('/', validateUserId(), (req, res) => {
 router.get('/:id', validateUserId(), (req, res) => {
   postDb.getById(req.params.id)
     .then(post => {
-      res.status(200).json(post);
+      if (post) {
+        res.status(200).json(post);
+      } else {
+        res.status(404).json({
+          message: "The post with the speicified ID does not exist."
+        })
+      }
     })
     .catch(err => {
       console.error(err);
@@ -34,8 +40,17 @@ router.get('/:id', validateUserId(), (req, res) => {
     })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validateUserId(), (req, res) => {
+  postDb.remove(req.params.id)
+    .then(() => {
+      res.status(200).json({
+        message: "The post has been deleted."
+      })
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
 router.put('/:id', (req, res) => {
