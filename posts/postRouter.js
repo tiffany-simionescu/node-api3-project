@@ -3,7 +3,8 @@ const postDb = require('./postDb');
 const { 
   validatePost,
   validateUser,
-  validateUserId
+  validateUserId,
+  validatePostId
 } = require('../middleware/validation');
 
 const router = express.Router({
@@ -23,21 +24,8 @@ router.get('/', validateUserId(), (req, res) => {
     })
 });
 
-router.get('/:id', validateUserId(), (req, res) => {
-  postDb.getById(req.params.id)
-    .then(post => {
-      if (post) {
-        res.status(200).json(post);
-      } else {
-        res.status(404).json({
-          message: "The post with the speicified ID does not exist."
-        })
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      next(err);
-    })
+router.get('/:id', validateUserId(), validatePostId(), (req, res) => {
+  res.json(req.post);
 });
 
 router.delete('/:id', validateUserId(), (req, res) => {
@@ -58,9 +46,5 @@ router.put('/:id', (req, res) => {
 });
 
 // custom middleware
-
-function validatePostId(req, res, next) {
-  // do your magic!
-}
 
 module.exports = router;
