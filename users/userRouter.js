@@ -1,9 +1,29 @@
 const express = require('express');
+const postRouter = require('../posts/postRouter');
+const db = require('./userDb');
 
 const router = express.Router();
 
+router.use('/:id/posts', postRouter);
+
+
 router.post('/', (req, res) => {
-  // do your magic!
+  if (!req.body.name) {
+    res.status(400).json({
+      errorMessage: "Please provide a name for the user."
+    })
+  }
+
+  db.insert(req.body)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({
+        error: "There was an error while saving the post to the database."
+      });
+    })
 });
 
 router.post('/:id/posts', (req, res) => {
@@ -11,7 +31,13 @@ router.post('/:id/posts', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  // do your magic!
+  db.get(req.body)
+    .then(data => {
+      res.status(200).json(data);
+    })
+    .catch(err => {
+      console.error(err);
+    })
 });
 
 router.get('/:id', (req, res) => {
