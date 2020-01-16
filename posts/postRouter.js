@@ -1,27 +1,56 @@
 const express = require('express');
+const postDb = require('./postDb');
+const { 
+  validatePost,
+  validateUserId,
+  validatePostId
+} = require('../middleware/validation');
 
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  // do your magic!
+const router = express.Router({
+  mergeParams: true,
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+// GET - /users/:id/posts
+router.get('/', validateUserId(), (req, res) => {
+  postDb.get()
+    .then(posts => {
+      res.status(200).json(posts)
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+// GET - /users/:id/posts/:id
+router.get('/:id', validateUserId(), validatePostId(), (req, res) => {
+  res.json(req.post);
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+// DELETE - /users/:id/posts/:id
+router.delete('/:id', validateUserId(), validatePostId(), (req, res) => {
+  postDb.remove(req.params.id)
+    .then(() => {
+      res.status(200).json({
+        message: "The post has been deleted."
+      })
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
-// custom middleware
-
-function validatePostId(req, res, next) {
-  // do your magic!
-}
+// PUT - /users//:id/posts/:id
+router.put('/:id', validatePost(), validateUserId(), validatePostId(), (req, res) => {
+  postDb.update(req.post.id, req.body)
+    .then(post => {
+      res.status(201).json(post)
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
+});
 
 module.exports = router;

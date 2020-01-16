@@ -1,47 +1,82 @@
 const express = require('express');
+const postRouter = require('../posts/postRouter');
+const userDb = require('./userDb');
+const postDb = require('../posts/postDb');
+const { 
+  validatePost,
+  validateUser,
+  validateUserId
+} = require('../middleware/validation');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  // do your magic!
+router.use('/:id/posts', postRouter);
+
+// POST - /users
+router.post('/', validateUser(), (req, res) => {
+  userDb.insert(req.user)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
-router.post('/:id/posts', (req, res) => {
-  // do your magic!
+// POST - /users/:id/posts
+router.post('/:id/posts', validatePost(), (req, res) => {
+  postDb.insert(req.text)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
+// GET - /users
 router.get('/', (req, res) => {
-  // do your magic!
+  userDb.get(req.user)
+    .then(data => {
+      res.status(200).json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+// GET - /users/:id
+router.get('/:id', validateUserId(), (req, res) => {
+  res.json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {
-  // do your magic!
+// DELETE - /users/:id
+router.delete('/:id', validateUserId(), (req, res) => {
+  userDb.remove(req.params.id)
+    .then(() => {
+      res.status(200).json({
+        message: "User has been deleted."
+      })
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+// PUT - /users/:id
+router.put('/:id', validateUserId(), validateUser(), (req, res) => {
+  userDb.update(req.params.id, req.user)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err =>{
+      console.error(err);
+      next(err);
+    })
 });
-
-router.put('/:id', (req, res) => {
-  // do your magic!
-});
-
-//custom middleware
-
-function validateUserId(req, res, next) {
-  // do your magic!
-}
-
-function validateUser(req, res, next) {
-  // do your magic!
-}
-
-function validatePost(req, res, next) {
-  // do your magic!
-}
 
 module.exports = router;
