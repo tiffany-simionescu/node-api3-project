@@ -8,6 +8,7 @@ const server = express();
 
 // Logger Middleware
 server.use(logger);
+server.use(express.json());
 
 // Use Custom Routes
 server.use('/users', userRouter);

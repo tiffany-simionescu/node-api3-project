@@ -1,6 +1,7 @@
 const express = require('express');
 const postRouter = require('../posts/postRouter');
-const db = require('./userDb');
+const userDb = require('./userDb');
+const postDb = require('../posts/postDb');
 const { 
   validatePost,
   validateUser,
@@ -13,7 +14,7 @@ router.use('/:id/posts', postRouter);
 
 
 router.post('/', validateUser(), (req, res) => {
-  db.insert(req.user)
+  userDb.insert(req.user)
     .then(data => {
       res.json(data);
     })
@@ -23,12 +24,19 @@ router.post('/', validateUser(), (req, res) => {
     })
 });
 
-router.post('/:id/posts', (req, res) => {
-  // do your magic!
+router.post('/:id/posts', validatePost(), (req, res) => {
+  postDb.insert(req.text)
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
 router.get('/', (req, res) => {
-  db.get(req.user)
+  userDb.get(req.user)
     .then(data => {
       res.json(data);
     })
@@ -38,8 +46,8 @@ router.get('/', (req, res) => {
     })
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validateUserId(), (req, res) => {
+  res.json(req.user);
 });
 
 router.get('/:id/posts', (req, res) => {

@@ -21,7 +21,6 @@ function validateUserId() {
     db.findById(req.params.id)
       .then(user => {
         if (user) {
-          // res.status(200).json(hub);
           req.user = user
           next();
         } else {
