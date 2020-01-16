@@ -46,14 +46,15 @@ router.get('/', (req, res) => {
     })
 });
 
-// Won't return a single user ... yet!
 router.get('/:id', validateUserId(), (req, res) => {
   res.json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {
-  // do your magic!
-});
+// // The endpoint '/:id/posts' is taken care of in postRouter
+
+// router.get('/:id/posts', (req, res) => {
+//    do your magic!
+// });
 
 router.delete('/:id', validateUserId(), (req, res) => {
   userDb.remove(req.params.id)
