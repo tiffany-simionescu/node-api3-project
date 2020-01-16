@@ -2,7 +2,6 @@ const express = require('express');
 const postDb = require('./postDb');
 const { 
   validatePost,
-  validateUser,
   validateUserId,
   validatePostId
 } = require('../middleware/validation');
@@ -11,8 +10,7 @@ const router = express.Router({
   mergeParams: true,
 });
 
-// END POINT - /:id/posts
-
+// GET - /users/:id/posts
 router.get('/', validateUserId(), (req, res) => {
   postDb.get()
     .then(posts => {
@@ -24,10 +22,12 @@ router.get('/', validateUserId(), (req, res) => {
     })
 });
 
+// GET - /users/:id/posts/:id
 router.get('/:id', validateUserId(), validatePostId(), (req, res) => {
   res.json(req.post);
 });
 
+// DELETE - /users/:id/posts/:id
 router.delete('/:id', validateUserId(), validatePostId(), (req, res) => {
   postDb.remove(req.params.id)
     .then(() => {
@@ -41,6 +41,7 @@ router.delete('/:id', validateUserId(), validatePostId(), (req, res) => {
     })
 });
 
+// PUT - /users//:id/posts/:id
 router.put('/:id', validatePost(), validateUserId(), validatePostId(), (req, res) => {
   postDb.update(req.post.id, req.body)
     .then(post => {

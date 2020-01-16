@@ -12,11 +12,11 @@ const router = express.Router();
 
 router.use('/:id/posts', postRouter);
 
-
+// POST - /users
 router.post('/', validateUser(), (req, res) => {
   userDb.insert(req.user)
     .then(data => {
-      res.json(data);
+      res.status(201).json(data);
     })
     .catch(err => {
       console.error(err);
@@ -24,10 +24,11 @@ router.post('/', validateUser(), (req, res) => {
     })
 });
 
+// POST - /users/:id/posts
 router.post('/:id/posts', validatePost(), (req, res) => {
   postDb.insert(req.text)
     .then(data => {
-      res.json(data);
+      res.status(201).json(data);
     })
     .catch(err => {
       console.error(err);
@@ -35,10 +36,11 @@ router.post('/:id/posts', validatePost(), (req, res) => {
     })
 });
 
+// GET - /users
 router.get('/', (req, res) => {
   userDb.get(req.user)
     .then(data => {
-      res.json(data);
+      res.status(200).json(data);
     })
     .catch(err => {
       console.error(err);
@@ -46,16 +48,12 @@ router.get('/', (req, res) => {
     })
 });
 
+// GET - /users/:id
 router.get('/:id', validateUserId(), (req, res) => {
   res.json(req.user);
 });
 
-// // The endpoint '/:id/posts' is taken care of in postRouter
-
-// router.get('/:id/posts', (req, res) => {
-//    do your magic!
-// });
-
+// DELETE - /users/:id
 router.delete('/:id', validateUserId(), (req, res) => {
   userDb.remove(req.params.id)
     .then(() => {
@@ -69,10 +67,11 @@ router.delete('/:id', validateUserId(), (req, res) => {
     })
 });
 
+// PUT - /users/:id
 router.put('/:id', validateUserId(), validateUser(), (req, res) => {
   userDb.update(req.params.id, req.user)
     .then(data => {
-      res.json(data);
+      res.status(201).json(data);
     })
     .catch(err =>{
       console.error(err);

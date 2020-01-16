@@ -2,11 +2,11 @@ const express = require('express');
 
 // Import Custom Routers
 const userRouter = require('./users/userRouter');
-// const postRouter = require('./posts/postRouter');
 
+// Initialize Server
 const server = express();
 
-// Logger Middleware
+// Middleware
 server.use(logger);
 server.use(express.json());
 
@@ -33,7 +33,6 @@ server.get('/', (req, res) => {
 });
 
 //custom middleware
-
 function logger(req, res, next) {
   console.log(`${req.method} - ${req.url} - ${Date(Date.now())}`);
   next();
