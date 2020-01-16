@@ -28,7 +28,7 @@ router.get('/:id', validateUserId(), validatePostId(), (req, res) => {
   res.json(req.post);
 });
 
-router.delete('/:id', validateUserId(), (req, res) => {
+router.delete('/:id', validateUserId(), validatePostId(), (req, res) => {
   postDb.remove(req.params.id)
     .then(() => {
       res.status(200).json({
@@ -41,10 +41,15 @@ router.delete('/:id', validateUserId(), (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+router.put('/:id', validatePost(), validateUserId(), validatePostId(), (req, res) => {
+  postDb.update(req.post.id, req.body)
+    .then(post => {
+      res.status(201).json(post)
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
-
-// custom middleware
 
 module.exports = router;
