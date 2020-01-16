@@ -7,7 +7,7 @@ function validateUser() {
     }
     if (!req.body.name) {
       return res.status(400).json({
-        message: "Missing User Name"
+        message: "Missing required name field"
       })
     } else {
       req.user = name;
@@ -24,7 +24,7 @@ function validateUserId() {
           req.user = user
           next();
         } else {
-          res.status(404).json({ message: 'User not found' });
+          res.status(400).json({ message: 'Invalid user id' });
         }
     })
     .catch(err => {
@@ -40,7 +40,7 @@ function validatePost() {
   return (req, res, next) => {
     if (!req.body.text) {
       return res.status(400).json({
-        message: "Missing post text"
+        message: "Missing required text field"
       })
     }
     next();
