@@ -23,8 +23,15 @@ router.get('/', validateUserId(), (req, res) => {
     })
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validateUserId(), (req, res) => {
+  postDb.getById(req.params.id)
+    .then(post => {
+      res.status(200).json(post);
+    })
+    .catch(err => {
+      console.error(err);
+      next(err);
+    })
 });
 
 router.delete('/:id', (req, res) => {
