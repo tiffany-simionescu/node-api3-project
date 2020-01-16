@@ -1,5 +1,21 @@
 const db = require('../users/userDb');
 
+function validateUser() {
+  return (req, res, next) => {
+    name = {
+      name: req.body.name
+    }
+    if (!req.body.name) {
+      return res.status(400).json({
+        message: "Missing User Name"
+      })
+    } else {
+      req.user = name;
+      next();
+    }
+  }
+}
+
 function validateUserId() {
   return (req, res, next) => {
     db.findById(req.params.id)
@@ -21,6 +37,19 @@ function validateUserId() {
   }
 }
 
+function validatePost() {
+  return (req, res, next) => {
+    if (!req.body.text) {
+      return res.status(400).json({
+        message: "Missing post text"
+      })
+    }
+    next();
+  }
+}
+
 module.exports = {
-  validateUserId
+  validateUser,
+  validateUserId,
+  validatePost
 }

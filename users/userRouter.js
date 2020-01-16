@@ -1,28 +1,25 @@
 const express = require('express');
 const postRouter = require('../posts/postRouter');
 const db = require('./userDb');
+const { 
+  validatePost,
+  validateUser,
+  validateUserId
+} = require('../middleware/validation');
 
 const router = express.Router();
 
 router.use('/:id/posts', postRouter);
 
 
-router.post('/', (req, res) => {
-  if (!req.body.name) {
-    res.status(400).json({
-      errorMessage: "Please provide a name for the user."
-    })
-  }
-
-  db.insert(req.body)
+router.post('/', validateUser(), (req, res) => {
+  db.insert(req.user)
     .then(data => {
-      res.status(201).json(data);
+      res.json(data);
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({
-        error: "There was an error while saving the post to the database."
-      });
+      next(err);
     })
 });
 
@@ -31,12 +28,13 @@ router.post('/:id/posts', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  db.get(req.body)
+  db.get(req.user)
     .then(data => {
-      res.status(200).json(data);
+      res.json(data);
     })
     .catch(err => {
       console.error(err);
+      next(err);
     })
 });
 
@@ -55,19 +53,5 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   // do your magic!
 });
-
-//custom middleware
-
-function validateUserId(req, res, next) {
-  // do your magic!
-}
-
-function validateUser(req, res, next) {
-  // do your magic!
-}
-
-function validatePost(req, res, next) {
-  // do your magic!
-}
 
 module.exports = router;
