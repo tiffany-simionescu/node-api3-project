@@ -35,7 +35,7 @@ server.get('/', (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {
-  console.log(`${req.method} - ${req.url} - ${Date.now()}`);
+  console.log(`${req.method} - ${req.url} - ${Date(Date.now())}`);
   next();
 }
 
