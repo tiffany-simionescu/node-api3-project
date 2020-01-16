@@ -46,6 +46,7 @@ router.get('/', (req, res) => {
     })
 });
 
+// Won't return a single user ... yet!
 router.get('/:id', validateUserId(), (req, res) => {
   res.json(req.user);
 });

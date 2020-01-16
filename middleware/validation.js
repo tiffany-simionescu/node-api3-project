@@ -18,7 +18,7 @@ function validateUser() {
 
 function validateUserId() {
   return (req, res, next) => {
-    db.findById(req.params.id)
+    db.getById(req.params.id)
       .then(user => {
         if (user) {
           req.user = user
